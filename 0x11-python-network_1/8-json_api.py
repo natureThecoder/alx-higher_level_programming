@@ -1,23 +1,32 @@
 #!/usr/bin/python3
-"""A script tha:
-- takes in a letter
-- sends POST request to http://0.0.0.0:5000/search_user
+"""
+Module  sends a POST request to http://0.0.0.0:5000/search_user
 with the letter as a parameter.
 """
-import sys
 import requests
+from sys import argv
 
 
-if __name__ == "__main__":
-    letter = "" if len(sys.argv) == 1 else sys.argv[1]
-    payload = {"q": letter}
-
-    r = requests.post("http://0.0.0.0:5000/search_user", data=payload)
+def main(argv):
+    """
+    Script that takes in a letter and sends a POST request to
+    http://0.0.0.0:5000/search_user with the letter as a parameter.
+    """
+    if len(argv) < 2:
+        q = ""
+    else:
+        q = argv[1]
+    payload = {'q': q}
+    url = "http://0.0.0.0:5000/search_user"
+    r = requests.post(url, data=payload)
     try:
-        response = r.json()
-        if response == {}:
+        result = r.json()
+        if bool(result) is False:
             print("No result")
         else:
-            print("[{}] {}".format(response.get("id"), response.get("name")))
-    except ValueError:
+            print("[{}] {}".format(result['id'], result['name']))
+    except:
         print("Not a valid JSON")
+
+if __name__ == "__main__":
+    main(argv):
